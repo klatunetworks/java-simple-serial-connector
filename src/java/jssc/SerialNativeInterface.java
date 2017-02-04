@@ -139,7 +139,7 @@ public class SerialNativeInterface {
             }
             architecture = "arm" + floatStr;
         }
-        
+
         libFolderPath = libRootFolder + fileSeparator + ".jssc" + fileSeparator + osName;
         libName = "jSSC-" + libVersion + "_" + architecture;
         libName = System.mapLibraryName(libName);
@@ -196,7 +196,7 @@ public class SerialNativeInterface {
 
     /**
      * Is library file exists
-     * 
+     *
      * @param libFilePath
      *
      * @since 0.8
@@ -260,7 +260,7 @@ public class SerialNativeInterface {
 
     /**
      * Get OS type (OS_LINUX || OS_WINDOWS || OS_SOLARIS)
-     * 
+     *
      * @since 0.8
      */
     public static int getOsType() {
@@ -308,7 +308,7 @@ public class SerialNativeInterface {
      *
      * @param portName name of port for opening
      * @param useTIOCEXCL enable/disable using of <b>TIOCEXCL</b>. Take effect only on *nix based systems
-     * 
+     *
      * @return handle of opened port or -1 if opening of the port was unsuccessful
      */
     public native long openPort(String portName, boolean useTIOCEXCL);
@@ -324,14 +324,14 @@ public class SerialNativeInterface {
      * @param setRTS initial state of RTS line (ON/OFF)
      * @param setDTR initial state of DTR line (ON/OFF)
      * @param flags additional Native settings. Take effect only on *nix based systems
-     * 
+     *
      * @return If the operation is successfully completed, the method returns true, otherwise false
      */
     public native boolean setParams(long handle, int baudRate, int dataBits, int stopBits, int parity, boolean setRTS, boolean setDTR, int flags);
 
     /**
      * Purge of input and output buffer
-     * 
+     *
      * @param handle handle of opened port
      * @param flags flags specifying required actions for purgePort method
      *
@@ -341,9 +341,9 @@ public class SerialNativeInterface {
 
     /**
      * Close port
-     * 
+     *
      * @param handle handle of opened port
-     * 
+     *
      * @return If the operation is successfully completed, the method returns true, otherwise false
      */
     public native boolean closePort(long handle);
@@ -353,16 +353,16 @@ public class SerialNativeInterface {
      *
      * @param handle handle of opened port
      * @param mask events mask
-     * 
+     *
      * @return If the operation is successfully completed, the method returns true, otherwise false
      */
     public native boolean setEventsMask(long handle, int mask);
 
     /**
      * Get events mask
-     * 
+     *
      * @param handle handle of opened port
-     * 
+     *
      * @return Method returns event mask as a variable of <b>int</b> type
      */
     public native int getEventsMask(long handle);
@@ -379,7 +379,7 @@ public class SerialNativeInterface {
 
     /**
      * Change RTS line state
-     * 
+     *
      * @param handle handle of opened port
      * @param value <b>true - ON</b>, <b>false - OFF</b>
      *
@@ -399,20 +399,20 @@ public class SerialNativeInterface {
 
     /**
      * Read data from port
-     * 
+     *
      * @param handle handle of opened port
      * @param byteCount count of bytes required to read
-     * 
+     *
      * @return Method returns the array of read bytes
      */
     public native byte[] readBytes(long handle, int byteCount);
 
     /**
      * Write data to port
-     * 
+     *
      * @param handle handle of opened port
      * @param buffer array of bytes to write
-     * 
+     *
      * @return If the operation is successfully completed, the method returns true, otherwise false
      */
     public native boolean writeBytes(long handle, byte[] buffer);
@@ -462,7 +462,7 @@ public class SerialNativeInterface {
 
     /**
      * Getting lines states
-     * 
+     *
      * @param handle handle of opened port
      *
      * @return Method returns the array containing information about lines in following order:
@@ -475,7 +475,7 @@ public class SerialNativeInterface {
 
     /**
      * Send Break singnal for setted duration
-     * 
+     *
      * @param handle handle of opened port
      * @param duration duration of Break signal
      * @return If the operation is successfully completed, the method returns true, otherwise false
@@ -483,4 +483,17 @@ public class SerialNativeInterface {
      * @since 0.8
      */
     public native boolean sendBreak(long handle, int duration);
+
+
+    /**
+     * Configure port for RS485 mode via ioctl with TIOCSRS485 struct
+     *
+     * @param handle handle of opened port
+     * @param flags TIOCSRS485 flags
+     * @param rtsDelay the number of micros before RTS change around send (try 1)
+     * @return If the operation is successfully completed, the method returns true, otherwise false
+     *
+     * @since KLATU Fork
+     */
+    public native boolean configureRS485(long handle, int flags, int rtsDelay);
 }

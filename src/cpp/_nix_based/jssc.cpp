@@ -58,7 +58,7 @@ JNIEXPORT jstring JNICALL Java_jssc_SerialNativeInterface_getNativeLibraryVersio
 /* OK */
 /*
  * Port opening
- * 
+ *
  * In 2.2.0 added useTIOCEXCL
  */
 JNIEXPORT jlong JNICALL Java_jssc_SerialNativeInterface_openPort(JNIEnv *env, jobject object, jstring portName, jboolean useTIOCEXCL){
@@ -241,10 +241,10 @@ const jint PARAMS_FLAG_PARMRK = 2;
 JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_setParams
   (JNIEnv *env, jobject object, jlong portHandle, jint baudRate, jint byteSize, jint stopBits, jint parity, jboolean setRTS, jboolean setDTR, jint flags){
     jboolean returnValue = JNI_FALSE;
-    
+
     speed_t baudRateValue = getBaudRateByNum(baudRate);
     int dataBits = getDataBitsByNum(byteSize);
-    
+
     termios *settings = new termios();
     if(tcgetattr(portHandle, settings) == 0){
         if(baudRateValue != -1){
@@ -472,7 +472,7 @@ JNIEXPORT jint JNICALL Java_jssc_SerialNativeInterface_getEventsMask
 }
 
 /* OK */
-/* 
+/*
  * RTS line status changing (ON || OFF)
  */
 JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_setRTS
@@ -491,7 +491,7 @@ JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_setRTS
 }
 
 /* OK */
-/* 
+/*
  * DTR line status changing (ON || OFF)
  */
 JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_setDTR
@@ -661,7 +661,7 @@ int getLinesStatus(jlong portHandle) {
 /* OK */
 /*
  * Not supported in Solaris and Mac OS X
- * 
+ *
  * Get interrupts count for:
  * 0 - Break(for BREAK event)
  * 1 - TX(for TXEMPTY event)
@@ -713,7 +713,7 @@ const jint events[] = {INTERRUPT_BREAK,
 /* OK */
 /*
  * Collecting data for EventListener class (Linux have no implementation of "WaitCommEvent" function from Windows)
- * 
+ *
  */
 JNIEXPORT jobjectArray JNICALL Java_jssc_SerialNativeInterface_waitEvents
   (JNIEnv *env, jobject object, jlong portHandle) {
@@ -724,7 +724,7 @@ JNIEXPORT jobjectArray JNICALL Java_jssc_SerialNativeInterface_waitEvents
     /*Input buffer*/
     jint bytesCountIn = 0;
     ioctl(portHandle, FIONREAD, &bytesCountIn);
-    
+
     /*Output buffer*/
     jint bytesCountOut = 0;
     ioctl(portHandle, TIOCOUTQ, &bytesCountOut);
@@ -736,7 +736,7 @@ JNIEXPORT jobjectArray JNICALL Java_jssc_SerialNativeInterface_waitEvents
     jint statusDSR = 0;
     jint statusRING = 0;
     jint statusRLSD = 0;
-    
+
     /*CTS status*/
     if(statusLines & TIOCM_CTS){
         statusCTS = 1;
@@ -770,7 +770,7 @@ JNIEXPORT jobjectArray JNICALL Java_jssc_SerialNativeInterface_waitEvents
     for(int i = 0; i < sizeof(events)/sizeof(jint); i++){
         jint returnValues[2];
         switch(events[i]) {
-            
+
             case INTERRUPT_BREAK: //Interrupt Break - for BREAK event
                 returnValues[1] = interruptBreak;
                 goto forEnd;
@@ -868,7 +868,24 @@ JNIEXPORT jintArray JNICALL Java_jssc_SerialNativeInterface_getLinesStatus
     if(statusLines & TIOCM_CAR){
         returnValues[3] = 1;
     }
-    
+
     env->SetIntArrayRegion(returnArray, 0, 4, returnValues);
     return returnArray;
+}
+
+/* OK */
+/*
+ * Enable RS485 settings (Linux only)
+ */
+JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_configureRS485
+  (JNIEnv *env, jobject object, jlong portHandle, jint flags, jint delay){
+    jboolean returnValue = JNI_FALSE;
+    #ifdef __linux_
+    struct serial_rs485 rs485conf;
+    rs485conf.flags = flags;
+    rs485conf.delay_rts_before_send = delay;
+    rs485conf.delay_rts_after_send = delay;
+    returnValue = ioctl (portHandle, TIOCSRS485, &rs485conf) >= 0 ? JNI_TRUE : JNI_FALSE;
+    #endif
+    return returnValue;
 }

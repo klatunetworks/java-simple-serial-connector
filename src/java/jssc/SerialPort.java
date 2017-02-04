@@ -45,7 +45,7 @@ public class SerialPort {
     //since 2.2.0 ->
     private Method methodErrorOccurred = null;
     //<- since 2.2.0
-    
+
     public static final int BAUDRATE_110 = 110;
     public static final int BAUDRATE_300 = 300;
     public static final int BAUDRATE_600 = 600;
@@ -65,19 +65,19 @@ public class SerialPort {
     public static final int DATABITS_6 = 6;
     public static final int DATABITS_7 = 7;
     public static final int DATABITS_8 = 8;
-    
+
 
     public static final int STOPBITS_1 = 1;
     public static final int STOPBITS_2 = 2;
     public static final int STOPBITS_1_5 = 3;
-    
+
 
     public static final int PARITY_NONE = 0;
     public static final int PARITY_ODD = 1;
     public static final int PARITY_EVEN = 2;
     public static final int PARITY_MARK = 3;
     public static final int PARITY_SPACE = 4;
-     
+
 
     public static final int PURGE_RXABORT = 0x0002;
     public static final int PURGE_RXCLEAR = 0x0008;
@@ -115,6 +115,12 @@ public class SerialPort {
     private static final int PARAMS_FLAG_PARMRK = 2;
     //<- since 2.6.0
 
+    // from serial_rs485 in linux serial API
+    private static final int RS485_FLAG_ENABLED         = (1 << 0);
+    private static final int RS485_FLAG_RTS_ON_SEND     = (1 << 1);
+    private static final int RS485_FLAG_RTS_AFTER_SEND  = (1 << 2);
+    private static final int RS485_FLAG_RX_DURING_TX    = (1 << 4);
+
     public SerialPort(String portName) {
         this.portName = portName;
         serialInterface = new SerialNativeInterface();
@@ -131,7 +137,7 @@ public class SerialPort {
 
     /**
      * Getting port state
-     * 
+     *
      * @return Method returns true if port is open, otherwise false
      */
     public boolean isOpened() {
@@ -178,7 +184,7 @@ public class SerialPort {
 
     /**
      * Setting the parameters of port. RTS and DTR lines are enabled by default
-     * 
+     *
      * @param baudRate data transfer rate
      * @param dataBits number of data bits
      * @param stopBits number of stop bits
@@ -227,13 +233,13 @@ public class SerialPort {
     }
 
     /**
-     * Purge of input and output buffer. Required flags shall be sent to the input. Variables with prefix 
+     * Purge of input and output buffer. Required flags shall be sent to the input. Variables with prefix
      * <b>"PURGE_"</b>, for example <b>"PURGE_RXCLEAR"</b>. Sent parameter "flags" is additive value,
-     * so addition of flags is allowed. For example, if input or output buffer shall be purged, 
+     * so addition of flags is allowed. For example, if input or output buffer shall be purged,
      * parameter <b>"PURGE_RXCLEAR | PURGE_TXCLEAR"</b>.
      * <br><b>Note: </b>some devices or drivers may not support this function
      *
-     * @return If the operation is successfully completed, the method returns true, otherwise false. 
+     * @return If the operation is successfully completed, the method returns true, otherwise false.
      *
      * @throws SerialPortException
      */
@@ -250,12 +256,12 @@ public class SerialPort {
     private int linuxMask;
 
     /**
-     * Set events mask. Required flags shall be sent to the input. Variables with prefix 
-     * <b>"MASK_"</b>, shall be used as flags, for example <b>"MASK_RXCHAR"</b>. 
+     * Set events mask. Required flags shall be sent to the input. Variables with prefix
+     * <b>"MASK_"</b>, shall be used as flags, for example <b>"MASK_RXCHAR"</b>.
      * Sent parameter "mask" is additive value, so addition of flags is allowed.
      * For example if messages about data receipt and CTS and DSR status changing
      * shall be received, it is required to set the mask - <b>"MASK_RXCHAR | MASK_CTS | MASK_DSR"</b>
-     * 
+     *
      * @return If the operation is successfully completed, the method returns true, otherwise false
      *
      * @throws SerialPortException
@@ -289,7 +295,7 @@ public class SerialPort {
 
     /**
      * Getting events mask for the port
-     * 
+     *
      * @return Method returns events mask as int type variable. This variable is an additive value
      *
      * @throws SerialPortException
@@ -306,7 +312,7 @@ public class SerialPort {
 
     /**
      * Getting events mask for the port is Linux OS (for internal use)
-     * 
+     *
      * @since 0.8
      */
     private int getLinuxMask() {
@@ -341,7 +347,7 @@ public class SerialPort {
      * Write byte array to port
      *
      * @return If the operation is successfully completed, the method returns true, otherwise false
-     * 
+     *
      * @throws SerialPortException
      */
     public boolean writeBytes(byte[] buffer) throws SerialPortException {
@@ -427,7 +433,7 @@ public class SerialPort {
      * Read byte array from port
      *
      * @param byteCount count of bytes for reading
-     * 
+     *
      * @return byte array with "byteCount" length
      *
      * @throws SerialPortException
@@ -499,7 +505,7 @@ public class SerialPort {
      * Read Hex String array from port
      *
      * @param byteCount count of bytes for reading
-     * 
+     *
      * @return String array with "byteCount" length and Hexadecimal String values
      *
      * @throws SerialPortException
@@ -852,7 +858,7 @@ public class SerialPort {
      * @param duration duration of Break signal
      *
      * @return If the operation is successfully completed, the method returns true, otherwise false
-     * 
+     *
      * @throws SerialPortException
      *
      * @since 0.8
@@ -931,7 +937,7 @@ public class SerialPort {
 
     /**
      * Get state of RING line
-     * 
+     *
      * @return If line is active, method returns true, otherwise false
      *
      * @throws SerialPortException
@@ -948,7 +954,7 @@ public class SerialPort {
 
     /**
      * Get state of RLSD line
-     * 
+     *
      * @return If line is active, method returns true, otherwise false
      *
      * @throws SerialPortException
@@ -1035,7 +1041,7 @@ public class SerialPort {
 
     /**
      * Create new EventListener Thread depending on the type of operating system
-     * 
+     *
      * @since 0.8
      */
     private EventThread getNewEventThread() {
@@ -1052,7 +1058,7 @@ public class SerialPort {
      * handler you shall set required event mask again
      *
      * @return If the operation is successfully completed, the method returns true, otherwise false
-     * 
+     *
      * @throws SerialPortException
      */
     public boolean removeEventListener() throws SerialPortException {
@@ -1081,7 +1087,7 @@ public class SerialPort {
      * Close port. This method deletes event listener first, then closes the port
      *
      * @return If the operation is successfully completed, the method returns true, otherwise false
-     * 
+     *
      * @throws SerialPortException
      */
     public boolean closePort() throws SerialPortException {
@@ -1102,7 +1108,7 @@ public class SerialPort {
     private class EventThread extends Thread {
 
         private boolean threadTerminated = false;
-        
+
         @Override
         public void run() {
             while(!threadTerminated){
