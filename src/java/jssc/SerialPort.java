@@ -116,10 +116,10 @@ public class SerialPort {
     //<- since 2.6.0
 
     // from serial_rs485 in linux serial API
-    private static final int RS485_FLAG_ENABLED         = (1 << 0);
-    private static final int RS485_FLAG_RTS_ON_SEND     = (1 << 1);
-    private static final int RS485_FLAG_RTS_AFTER_SEND  = (1 << 2);
-    private static final int RS485_FLAG_RX_DURING_TX    = (1 << 4);
+    public static final int RS485_FLAG_ENABLED         = (1 << 0);
+    public static final int RS485_FLAG_RTS_ON_SEND     = (1 << 1);
+    public static final int RS485_FLAG_RTS_AFTER_SEND  = (1 << 2);
+    public static final int RS485_FLAG_RX_DURING_TX    = (1 << 4);
 
     public SerialPort(String portName) {
         this.portName = portName;
@@ -866,6 +866,20 @@ public class SerialPort {
     public boolean sendBreak(int duration)throws SerialPortException {
         checkPortOpened("sendBreak()");
         return serialInterface.sendBreak(portHandle, duration);
+    }
+    
+    /**
+     * Configure RS485 on this device.  See RS485 specific flags.
+     * 
+     * @param flags
+     * @param delayRTSBeforeSend
+     * @param delayRTSAfterSend
+     * @return
+     * @throws SerialPortException
+     */
+    public int configureRS485(int flags, int delayRTSBeforeSend, int delayRTSAfterSend)throws SerialPortException {
+      checkPortOpened("configureRS485()");
+      return serialInterface.configureRS485(portHandle, flags, delayRTSBeforeSend, delayRTSBeforeSend);
     }
 
     private int[][] waitEvents() {

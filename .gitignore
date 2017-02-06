@@ -1,0 +1,8 @@
+target/
+.classpath
+.project
+.settings
+src/cpp/_nix_based/*
+!Makefile
+!Rakefile
+!*.cpp

@@ -1,0 +1,17 @@
+
+ARMHF_PATH=ENV.fetch("ARMHF_PATH", "/opt/rpi-tools/arm-bcm2708/arm-bcm2708hardfp-linux-gnueabi/bin/arm-bcm2708hardfp-linux-gnueabi-")
+ARMSF_PATH=ENV.fetch("ARMSF_PATH", "/opt/rpi-tools/arm-bcm2708/arm-bcm2708-linux-gnueabi/bin/arm-bcm2708-linux-gnueabi-")
+
+task :default => :compile_copy
+
+task :compile do
+  system "make clean && make jssc_armhf ARCH=arm CROSS_COMPILE=#{ARMHF_PATH} -k"
+  system "make clean && make jssc_armsf ARCH=arm CROSS_COMPILE=#{ARMHF_PATH} -k"
+  # system "make clean && make CPPOPTS='-m32 -L/usr/lib32/ -lstdc++' jssc_x86"
+  system "make clean && make CPPOPTS='-m64' jssc_x86_64"
+end
+
+
+task :compile_copy => :compile do
+  system "cp *.so ../../java/libs/linux/"
+end

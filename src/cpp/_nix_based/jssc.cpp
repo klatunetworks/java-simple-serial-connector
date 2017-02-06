@@ -877,15 +877,15 @@ JNIEXPORT jintArray JNICALL Java_jssc_SerialNativeInterface_getLinesStatus
 /*
  * Enable RS485 settings (Linux only)
  */
-JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_configureRS485
-  (JNIEnv *env, jobject object, jlong portHandle, jint flags, jint delay){
-    jboolean returnValue = JNI_FALSE;
-    #ifdef __linux_
+JNIEXPORT jint JNICALL Java_jssc_SerialNativeInterface_configureRS485
+  (JNIEnv *env, jobject object, jlong portHandle, jint flags, jint delayRTSBeforeSend, jint delayRTSAfterSend){
+    jint returnValue = 0;
+    #ifdef __linux__
     struct serial_rs485 rs485conf;
     rs485conf.flags = flags;
-    rs485conf.delay_rts_before_send = delay;
-    rs485conf.delay_rts_after_send = delay;
-    returnValue = ioctl (portHandle, TIOCSRS485, &rs485conf) >= 0 ? JNI_TRUE : JNI_FALSE;
+    rs485conf.delay_rts_before_send = delayRTSBeforeSend;
+    rs485conf.delay_rts_after_send = delayRTSAfterSend;
+    returnValue = ioctl (portHandle, TIOCSRS485, &rs485conf);
     #endif
     return returnValue;
 }

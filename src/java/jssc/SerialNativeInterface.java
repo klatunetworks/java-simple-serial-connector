@@ -490,10 +490,11 @@ public class SerialNativeInterface {
      *
      * @param handle handle of opened port
      * @param flags TIOCSRS485 flags
-     * @param rtsDelay the number of micros before RTS change around send (try 1)
+     * @param delayRTSBeforeSend the number of millis between asserting RTS and sending
+     * @param delayRTSAfterSend the number of millis between sending and deasserting RTS
      * @return If the operation is successfully completed, the method returns true, otherwise false
      *
      * @since KLATU Fork
      */
-    public native boolean configureRS485(long handle, int flags, int rtsDelay);
+    public native int configureRS485(long handle, int flags, int delayRTSBeforeSend, int delayRTSAfterSend);
 }

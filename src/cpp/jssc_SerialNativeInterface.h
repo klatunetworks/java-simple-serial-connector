@@ -198,10 +198,10 @@ JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_sendBreak
 /*
  * Class:     jssc_SerialNativeInterface
  * Method:    configureRS485
- * Signature: (JII)Z
+ * Signature: (JIII)I
  */
-JNIEXPORT jboolean JNICALL Java_jssc_SerialNativeInterface_configureRS485
-  (JNIEnv *, jobject, jlong, jint, jint);
+JNIEXPORT jint JNICALL Java_jssc_SerialNativeInterface_configureRS485
+  (JNIEnv *, jobject, jlong, jint, jint, jint);
 
 #ifdef __cplusplus
 }
